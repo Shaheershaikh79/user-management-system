@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:12345678@db.ldgfbkfzmpvsctexifbs.supabase.co:5432/postgres"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  role     String @default("user") // <-- add this line
+
+  reports Report[]
+}
+
+model Report {
+  id      Int      @id @default(autoincrement())
+  date    DateTime
+  tasks   String
+  timings String
+  notes   String?
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
+}
